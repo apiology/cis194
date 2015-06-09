@@ -23,3 +23,7 @@ parseMessageFromList l =
     
 parseMessage :: String -> LogMessage
 parseMessage s = parseMessageFromList (words s)
+
+parse :: String -> [LogMessage]
+parse file = map parseMessage (lines file)
+
