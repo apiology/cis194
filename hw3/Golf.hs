@@ -1,6 +1,5 @@
 module Golf where
 
-
 -- include every nth element of the list
 skipsN :: [a] -> Int -> [a]
 skipsN [] n = []
@@ -21,17 +20,11 @@ localMaxima (x1:x2:x3:xs)
 localMaxima _ = []
 -- XXX filter with >
 
-countOf :: [Integer] -> Integer -> Int
-countOf xs n = length (filter ((==) n) xs)
-
 counts :: [Integer] -> [Int]
-counts xs = map (countOf xs) [0..9]
-
-renderStarIfGTE :: Int -> Int -> Char
-renderStarIfGTE value a = if a >= value then '*' else ' '
+counts xs = map (\n -> length (filter ((==) n) xs)) [0..9]
 
 renderRow :: [Int] -> Int -> String
-renderRow counts v = (map (renderStarIfGTE v) counts) ++ "\n"
+renderRow counts v = map (\a -> if a >= v then '*' else ' ') counts ++ "\n"
 
 renderChart :: [Int] -> String
 renderChart counts = foldl1 (++) (map (renderRow counts) [topValue,topValue-1..0])
