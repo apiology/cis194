@@ -45,17 +45,6 @@ xor = foldl (\odd_num_trues v -> if v then not odd_num_trues else odd_num_trues)
 map' :: (a -> b) -> [a] -> [b]
 map' f = foldr (\val acc -> (f val:acc)) []
 
-numbersToRemove :: Integer -> [Integer]
-numbersToRemove n = sort $ filter (<=n) $ [i+j+2*i*j | i <- [1..n], j <- [1..n], i <= j]
-
--- XXX turn this into a fold
-removeElements :: [Integer] -> [Integer] -> [Integer]
-removeElements [] bs = []
-removeElements as [] = as
-removeElements (a:as) (b:bs)
-  | b < a     = removeElements (a:as) bs
-  | b == a    = removeElements as bs
-  | otherwise = a:removeElements as (b:bs)
-
 sieveSundaram :: Integer -> [Integer]
-sieveSundaram n = map (\n -> 2*n + 1) $ removeElements [1..n] $ numbersToRemove n
+sieveSundaram n = map (\n -> 2*n + 1) $ filter (\e -> notElem e toRemove) [1..n]
+   where toRemove = filter (<=n) $ [i+j+2*i*j | i <- [1..n], j <- [1..n], i <= j]
