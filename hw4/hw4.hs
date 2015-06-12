@@ -11,8 +11,8 @@ fun1' :: [Integer] -> Integer
 fun1' = product . (map (subtract 2)) . (filter even)
 
 fun2 :: Integer -> Integer
-fun2 1 = 0
-fun2 n | even n = n + fun2 (n `div` 2)
+fun2 1             = 0
+fun2 n | even n    = n + fun2 (n `div` 2)
        | otherwise = fun2 (3 * n + 1)
 
 fun2' = sum . filter even . takeWhile (>1) . iterate f
@@ -32,7 +32,7 @@ addNode newval (Node h left old right)
   | (treeHeight left) < (treeHeight right) =
      let newleft = (addNode newval left)
      in Node (succ (treeHeight newleft)) newleft old right
-  | otherwise                              =
+  | otherwise =
      let newright = (addNode newval right)
      in Node (succ (treeHeight newright)) left old newright
 
