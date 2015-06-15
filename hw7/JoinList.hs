@@ -86,7 +86,7 @@ fromLine :: String -> JoinList (Score, Size) String
 fromLine s = Single (scoreString s, 1) s
 
 instance (Buffer (JoinList (Score, Size) String)) where
-  toString jl = mconcat $ jlToList jl
+  toString = unlines . jlToList
   fromString s = foldl (+++) Empty $ map fromLine $ lines s
   line = indexJ
   replaceLine n ln jl = takeJ n jl +++ fromString ln +++ dropJ (succ n) jl
