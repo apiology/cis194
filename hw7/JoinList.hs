@@ -69,7 +69,7 @@ takeJ i jl@(Single _ _) = if i <= 0 then Empty else jl
 takeJ i jl@(Append _ l1 l2)
   | i < l1size            = takeJ i l1
   | i == l1size           = jl
-  | i < (l1size + l2size) = l1 +++ (takeJ (i - l1size) l2)
+  | i < (l1size + l2size) = l1 +++ takeJ (i - l1size) l2
   | otherwise             = jl
   where l1size = sizeOf l1
         l2size = sizeOf l2
