@@ -1,11 +1,11 @@
 {-# LANGUAGE FlexibleInstances #-}
 module JoinList where
 
-import Editor
-import Sized
-import Data.Monoid
-import Scrabble
-import Buffer
+import           Buffer
+import           Data.Monoid
+import           Editor
+import           Scrabble
+import           Sized
 
 -- "The m parameter will be used to track monoidal annotations to the
 --  structure."
@@ -73,7 +73,7 @@ takeJ i jl@(Append _ l1 l2)
   | otherwise             = jl
   where l1size = sizeOf l1
         l2size = sizeOf l2
-  
+
 scoreLine :: String -> JoinList Score String
 scoreLine s = Single (scoreString s) s
 
