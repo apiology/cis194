@@ -7,8 +7,6 @@ import Data.Monoid
 import Data.Tree
 import Data.List
 
-
-
 -- glCons should simply add the new Employee and add their fun score
 -- without doing any kind of checks. - assumes employee is not already
 -- on list
@@ -18,16 +16,15 @@ glCons e (GL guests glfun) = GL (e:guests) (glfun + empFun e)
 -- Monoid GuestList combines two guestlists on the basis of which one is better.
 instance Monoid GuestList where
   mempty  = GL [] 0
-  mappend = max
+  mappend (GL guests _) b = foldl' (flip glCons) b guests
 
 moreFun :: GuestList -> GuestList -> GuestList
-moreFun = mappend
+moreFun = max
 
 treeFold :: (a -> [b] -> b) -> Tree a -> b
 treeFold f (Node a subF) = f a childResults
   where childResults = map (treeFold f) subF
                                
--- combineGLs :: Employee -> [GuestList] -> GuestList
 
 -- The first argument is the “boss” of the current subtree (let’s call
 -- him Bob). The second argument is a list of the results for each
@@ -39,14 +36,15 @@ treeFold f (Node a subF) = f a childResults
 -- that doesn’t include Bob.
 
 -- returns (best with boss, best without boss)
+
 nextLevel :: Employee -> [(GuestList, GuestList)] -> (GuestList, GuestList)
 nextLevel bob = foldl' add (glCons bob mempty, mempty)
   where add (withBob, withoutBob) (withSubBoss, withoutSubBoss) =
-          (glCons bob withoutSubBoss <> withBob,
-           withSubBoss <> withoutSubBoss <> withoutBob)
+          (withBob <> withoutSubBoss,
+           (withoutBob <> withSubBoss) `moreFun` (withoutBob <> withoutSubBoss))
 
 maxFun :: Tree Employee -> GuestList
-maxFun company = uncurry (<>) $ treeFold nextLevel company
+maxFun company = uncurry moreFun $ treeFold nextLevel company
 
 readEmployeeTree :: String -> Tree Employee
 readEmployeeTree = read
