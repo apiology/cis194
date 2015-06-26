@@ -31,8 +31,8 @@ testCompany
 
 testCompany2 :: Tree Employee
 testCompany2
-  = Node (Emp "Stan" 9)
-    [ Node (Emp "Bob" 3) -- (8, 8)
+  = Node (Emp "Stan" 9) -- (22, 26) -- should not include stan
+    [ Node (Emp "Bob" 3) -- (8, 9) -- I think the original material was wrong--this should be a 9 without bob - Sue+John+Fred = 3+5+1 = 9
       [ Node (Emp "Joe" 5) -- (5, 6)
         [ Node (Emp "John" 1) [] -- (1, 0)
         , Node (Emp "Sue" 5) [] -- (5, 0)
