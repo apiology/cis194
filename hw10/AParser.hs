@@ -107,8 +107,6 @@ abParser = (,) <$> char 'a' <*> char 'b'
 abParser_ :: Parser ()
 abParser_ = (\_ _ -> ()) <$> char 'a' <*> char 'b'
 
-
-
 intPair :: Parser [Integer]
 intPair =  (\a _ b -> [a,b]) <$> posInt <*> char ' ' <*> posInt
 
@@ -117,14 +115,9 @@ intPair =  (\a _ b -> [a,b]) <$> posInt <*> char ' ' <*> posInt
 --  (<|>) :: f a -> f a -> f a
 
 instance Alternative Parser where
-  empty = Parser f
-    where
-      f s = Nothing
+  empty = Parser (const Nothing)
   (<|>) p1 p2 = Parser f
-    where
-      f s = case runParser p1 s of
-             Nothing -> runParser p2 s
-             ret -> ret
+    where f s = runParser p1 s <|> runParser p2 s
 
 uppercase :: Parser Char
 uppercase = satisfy isUpper
