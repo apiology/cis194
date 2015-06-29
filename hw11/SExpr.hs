@@ -12,17 +12,14 @@ import Data.Char -- so I can run examples with isUpper, etc
 --  1. Parsing repetitions
 ------------------------------------------------------------
 
--- XXX is this already somewhere?  hoogle it
 (<:>) :: Applicative f => f a -> f [a] -> f [a]
 (<:>) = liftA2 (:)
 
 zeroOrMore :: Parser a -> Parser [a]
-zeroOrMore p = (:) <$> p <*> zeroOrMore p <|> pure []
--- zeroOrMore p = p <:> (zeroOrMore p <|> pure []) -- XXX: Figure out if this works
+zeroOrMore p = (p <:> zeroOrMore p) <|> pure []
 
 oneOrMore :: Parser a -> Parser [a]
-oneOrMore p = (:) <$> p <*> zeroOrMore p
--- oneOrMore p = p <:> zeroOrMore p -- XXX: Figure out if this works
+oneOrMore p = p <:> zeroOrMore p
 
 ------------------------------------------------------------
 --  2. Utilities
@@ -30,9 +27,6 @@ oneOrMore p = (:) <$> p <*> zeroOrMore p
 
 spaces :: Parser String
 spaces = zeroOrMore (satisfy isSpace)
-
-(<++>) :: Applicative f => f [a] -> f [a] -> f [a]
-(<++>) = liftA2 (++)
 
 ident :: Parser String
 ident = satisfy isAlpha <:> zeroOrMore (satisfy isAlphaNum)
@@ -58,11 +52,8 @@ data SExpr = A Atom
 parseAtom :: Parser Atom
 parseAtom = (N <$> posInt) <|> (I <$> ident)
 
--- Comb <$> (:) <*> oneOrMore (parseSExpr))
 parseComb :: Parser [SExpr]
 parseComb = char '(' *> oneOrMore parseSExpr <* char ')'
 
 parseSExpr :: Parser SExpr
 parseSExpr = spaces *> ((A <$> parseAtom) <|> (Comb <$> parseComb)) <* spaces
--- parseSExpr = A <$> parseAtom
---  where 
